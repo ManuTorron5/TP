@@ -78,10 +78,8 @@ public class Main {
 	 * Juegos disponibles.
 	 */
 	enum GameInfo {
-		CONNECTN("cn", "ConnectN"),
-		TicTacToe("ttt", "Tic-Tac-Toe"),
-		AdvancedTicTacToe("attt", "Advanced Tic-Tac-Toe"),
-		Ataxx("atxx", "Ataxx");
+		CONNECTN("cn", "ConnectN"), TicTacToe("ttt", "Tic-Tac-Toe"), AdvancedTicTacToe(
+				"attt", "Advanced Tic-Tac-Toe"), Ataxx("atxx", "Ataxx");
 
 		private String id;
 		private String desc;
@@ -112,9 +110,7 @@ public class Main {
 	 * Modos de juego.
 	 */
 	enum PlayerMode {
-		MANUAL("m", "Manual"),
-		RANDOM("r", "Random"),
-		AI("a", "Automatics");
+		MANUAL("m", "Manual"), RANDOM("r", "Random"), AI("a", "Automatics");
 
 		private String id;
 		private String desc;
@@ -246,6 +242,16 @@ public class Main {
 	private static AIAlgorithm aiPlayerAlg;
 
 	/**
+	 * Number of obstacles provided with the option -o ({@code null}) if not
+	 * provided.
+	 * 
+	 * <p>
+	 * Numero de obstaculos proporcionados con la opcion -o, o {@code null} si
+	 * no se incluye la opcion -o
+	 */
+	private static Integer obstacles;
+
+	/**
 	 * Processes the command-line arguments and modify the fields of this class
 	 * with corresponding values. E.g., the factory, the pieces, etc.
 	 *
@@ -275,6 +281,7 @@ public class Main {
 																// --multiviews
 		cmdLineOptions.addOption(constructPlayersOption()); // -p or --players
 		cmdLineOptions.addOption(constructDimensionOption()); // -d or --dim
+		cmdLineOptions.addOption(constructObstaclesOption()); // -o or --dim
 
 		// parse the command line as provided in args
 		//
@@ -283,6 +290,7 @@ public class Main {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseHelpOption(line, cmdLineOptions);
 			parseDimOptionn(line);
+			parseObstaclesOption(line);
 			parseGameOption(line);
 			parseViewOption(line);
 			parseMultiViewOption(line);
@@ -305,6 +313,24 @@ public class Main {
 			System.exit(1);
 		}
 
+	}
+
+	private static Option constructObstaclesOption() {
+		return new Option("o", "obstacles", true,
+				"Creates the obstacles in the board");
+	}
+
+	private static void parseObstaclesOption(CommandLine line)
+			throws ParseException {
+
+		String dimVal = line.getOptionValue("o");
+		if (dimVal != null) {
+			try {
+				obstacles = Integer.parseInt(dimVal);
+			} catch (NumberFormatException e) {
+				throw new ParseException("Invalid obstacle number: " + dimVal);
+			}
+		}
 	}
 
 	/**
@@ -544,7 +570,13 @@ public class Main {
 			gameFactory = new TicTacToeFactory();
 			break;
 		case Ataxx:
-			gameFactory = new AtaxxFactory();
+			if (dimRows != null && dimCols != null && dimRows == dimCols && obstacles == null) {
+				gameFactory = new AtaxxFactory(dimRows, 0);
+			} else  if(dimRows != null & dimCols != null & dimRows == dimCols && obstacles != null){
+				gameFactory = new AtaxxFactory(dimRows, obstacles);
+			} else{
+				gameFactory = new AtaxxFactory();
+			}
 			break;
 		default:
 			throw new UnsupportedOperationException(
