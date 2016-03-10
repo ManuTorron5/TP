@@ -4,35 +4,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import es.ucm.fdi.tp.basecode.bgame.control.ConsolePlayerFromListOfMoves;
+import es.ucm.fdi.tp.basecode.bgame.control.ConsolePlayer;
 import es.ucm.fdi.tp.basecode.bgame.control.Controller;
 import es.ucm.fdi.tp.basecode.bgame.control.DummyAIPlayer;
 import es.ucm.fdi.tp.basecode.bgame.control.GameFactory;
 import es.ucm.fdi.tp.basecode.bgame.control.Player;
 import es.ucm.fdi.tp.basecode.bgame.model.AIAlgorithm;
 import es.ucm.fdi.tp.basecode.bgame.model.GameError;
+import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameObserver;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Observable;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 import es.ucm.fdi.tp.basecode.bgame.views.GenericConsoleView;
 
+/**
+ * A factory for creating Ataxx games. See {@link AtaxxRules} for the
+ * description of the game.
+ * 
+ * 
+ * <p>
+ * Factoria para la creacion de juegos Ataxx. Vease {@link AtaxxRules} para la
+ * descripcion del juego.
+ */
 public class AtaxxFactory implements GameFactory {
-	
+
 	private int dim;
-	
+
 	private int obstacles;
-	
+
 	public AtaxxFactory() {
 		this(5, 0);
 	}
 
+	public AtaxxFactory(int dim) {
+		if (dim < 5 || dim % 2 == 0) {
+			throw new GameError(
+					"Dimension must be an odd number greater than 5: " + dim);
+		} else {
+			this.dim = dim;
+			this.obstacles = 0;
+		}
+	}
+
 	public AtaxxFactory(int dim, int obstacles) {
 		if (dim < 5 || dim % 2 == 0) {
-			throw new GameError("Dimension must be an odd number greater than 5: " + dim);
-		} else if(obstacles > dim * 3){
-			throw new GameError("The number of obstacles must be a number between 0 and dim * 3");
-		}else {
+			throw new GameError(
+					"Dimension must be an odd number greater than 5: " + dim);
+		} else if (obstacles > dim * 3 || obstacles % 4 != 0) {
+			throw new GameError(
+					"The number of obstacles must be a multiple of 4 between 0 and dim * 3");
+		} else {
 			this.dim = dim;
 			this.obstacles = obstacles;
 		}
@@ -45,7 +67,9 @@ public class AtaxxFactory implements GameFactory {
 
 	@Override
 	public Player createConsolePlayer() {
-		return new ConsolePlayerFromListOfMoves(new Scanner(System.in));
+		ArrayList<GameMove> possibleMoves = new ArrayList<GameMove>();
+		possibleMoves.add(new AtaxxMove());
+		return new ConsolePlayer(new Scanner(System.in), possibleMoves);
 	}
 
 	@Override
@@ -70,7 +94,6 @@ public class AtaxxFactory implements GameFactory {
 		pieces.add(new Piece("O"));
 		return pieces;
 	}
-	
 
 	@Override
 	public void createConsoleView(Observable<GameObserver> g, Controller c) {
@@ -78,8 +101,8 @@ public class AtaxxFactory implements GameFactory {
 	}
 
 	@Override
-	public void createSwingView(final Observable<GameObserver> g, final Controller c, final Piece viewPiece,
-			Player random, Player ai) {
+	public void createSwingView(final Observable<GameObserver> g,
+			final Controller c, final Piece viewPiece, Player random, Player ai) {
 		throw new UnsupportedOperationException("There is no swing view");
 	}
 

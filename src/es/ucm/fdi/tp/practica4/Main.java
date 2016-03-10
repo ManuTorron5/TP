@@ -79,7 +79,7 @@ public class Main {
 	 */
 	enum GameInfo {
 		CONNECTN("cn", "ConnectN"), TicTacToe("ttt", "Tic-Tac-Toe"), AdvancedTicTacToe(
-				"attt", "Advanced Tic-Tac-Toe"), Ataxx("atxx", "Ataxx");
+				"attt", "Advanced Tic-Tac-Toe"), Ataxx("ataxx", "Ataxx");
 
 		private String id;
 		private String desc;
@@ -315,11 +315,29 @@ public class Main {
 
 	}
 
+	/**
+	 * Builds the Obstacles (-o or --obstacles) CLI option
+	 * 
+	 * <p>
+	 * Constuye la opion CLI -o.
+	 * 
+	 * @return CLI {@link Option} for the obstacles option.
+	 */
 	private static Option constructObstaclesOption() {
 		return new Option("o", "obstacles", true,
 				"Creates the obstacles in the board");
 	}
 
+	/**
+	 * Parses the obstacles option (-o or --obstacles). It sets the value of
+	 * {@link #obstacles} accordingly.
+	 * 
+	 * <p>
+	 * Extrae la opcion obstacles (-o) y asigna el valor de {@ling #obstacles}
+	 * 
+	 * @param line
+	 * @throws ParseException
+	 */
 	private static void parseObstaclesOption(CommandLine line)
 			throws ParseException {
 
@@ -341,7 +359,6 @@ public class Main {
 	 * 
 	 * @return CLI {@link {@link Option} for the multiview option.
 	 */
-
 	private static Option constructMlutiViewOption() {
 		return new Option("m", "multiviews", false,
 				"Create a separate view for each player (valid only when using the "
@@ -570,11 +587,13 @@ public class Main {
 			gameFactory = new TicTacToeFactory();
 			break;
 		case Ataxx:
-			if (dimRows != null && dimCols != null && dimRows == dimCols && obstacles == null) {
-				gameFactory = new AtaxxFactory(dimRows, 0);
-			} else  if(dimRows != null & dimCols != null & dimRows == dimCols && obstacles != null){
+			if (dimRows != null && dimCols != null && dimRows == dimCols
+					&& obstacles == null) {
+				gameFactory = new AtaxxFactory(dimRows);
+			} else if (dimRows != null & dimCols != null & dimRows == dimCols
+					&& obstacles != null) {
 				gameFactory = new AtaxxFactory(dimRows, obstacles);
-			} else{
+			} else {
 				gameFactory = new AtaxxFactory();
 			}
 			break;
