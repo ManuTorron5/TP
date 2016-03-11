@@ -1,0 +1,19 @@
+David Fernandez Alcoba y Manuel Sanchez Torron
+
+Durante la implementación de la práctica hemos tenido problemas con la pieza de los obstaculos,
+al principio intentamos añadir una pieza al final de la lista de jugadores, que se ignorase en el los bucles
+en los que se recorria el array de piezas, pero resultaba poco eficiente y nos dio más de un problema en las funciones de terminar, etc.
+
+Con lo que finalmente la solucion fue crear un atributo privado en aquellas clases que lo necesitasen del tipo
+Private Piece obs; que con las constructoras se inicializaba a "*". Con esta solucion pudimos solucionar el problema planteado, y desechar la primera solucion.
+
+Tambien al colocar los obstaculos en el tablero tuvimos algun problema, puesto que los colocabamos antes de colocar las piezas de los jugadores, y despues aparecian menos
+obstaculos de los que se habia ordenado en los argumentos. La solucion era simplemente colocar antes las piezas de los jugadores.
+
+Nos costo tambien encontrar una solucion mas o menos eficiente para encontrar todos los movimientos posibles, puesto que todas las que se nos ocurrian
+pasaban por bucles dentro de bucles dentro de bucles... Finalmente llegamos a una solucion, que no creemos que sea la mas eficiente, pero soloucion al fin y al cabo, que 
+consiste en recorrer todo el tablero, y alli  donde se encuentre una pieza del jugador al que le toque jugar, se recorren todas las posiciones a las que podria moverse segun las
+reglas, chequeando que esten vacias.
+
+El resto de la practica, sorprendentemente, nos dio bastantes pocos problemas, que se pudieron solucionar con las mismas soluciones que habiamos pensando en un principio,
+pero cambiando pequeñas cositas sin importancia.
